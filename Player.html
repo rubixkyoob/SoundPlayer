@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<head>
+<title>Sound Player</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+	<style>
+		table {
+			background-color: white;
+		}
+	</style>
+	
+	<script type="text/javascript">
+		
+		
+		//var slider = document.getElementById("myRange");
+		
+		// Update the current slider value (each time you drag the slider handle)
+		//slider.oninput = function() {
+			// adjust volume
+		//}
+		var tracks = 0;
+		
+		$( document ).ready(function() {
+			
+			$("#btnNewTrack").click(function() {
+				createTrack(tracks);
+			});
+			
+		});
+		
+		function getFilePath(){
+			$('input[type=file]').change(function () {
+				var filePath=$('#fileUpload').val(); 
+				console.log(filePath);
+				$("#txtFilename1").val(filePath);
+			});
+		}
+		
+		function createTrack(id, filename="", volume=100) {
+			var row = $('<tr id="track' + id + '"></tr>');
+			row.append($('<td><input type="checkbox"  id="checkbox' + id + '"></td>'));
+			row.append($('<td><audio id="audio' + id + '" controls><source id="audOggSrc' + id + '" src="" type="audio/ogg">Your browser does not support the audio tag.</audio></td>'));
+			row.append($('<td><div class="slidecontainer"><input type="range" min="1" max="100" value="' + volume + '" class="slider" id="volume' + id + '"></div></td>'));
+			row.append($('<td><input type="file" id="fileUpload' + id + '"><input id="txtFilename' + id + '" value="' + filename + '"></td>'));
+			row.append($('<td><button id="btnPlayTrack' + id + '" type="button">Play</button></td>'));
+			$("#trackBody").append(row);
+			
+			// set listeners
+			$('input[type=file]').change(function () {
+				var filePath=$('#fileUpload' + id).val(); 
+				console.log(filePath);
+				$("#txtFilename" + id).val(filePath);
+				
+			});
+			
+			tracks++;
+		}
+		
+		function removeTrack(id) {
+			if(id >= 0) {
+				$("#trackBody").remove("track" + id);
+				tracks--;
+			}
+		}
+		
+		function loadSource(id) {
+			var file = $("#txtFilePath").val() + $("#txtFilename" + id).val().name;
+			console.log('loading ' + file + '...');
+			$("#audOggSrc" + id).attr("src",file);
+			document.getElementById('audio' + id).load();
+		}
+	</script>
+</head>
+<body bgcolor="#eeeeee">
+
+	<!-- Global table -->
+	<table>
+		<tbody>
+			<tr>
+				<td>
+					<button id="btnNewScene" type="button">Create New Scene</button>
+				</td>
+				<td>
+					<select id="selectTrack">
+						<option value="1">Scene 1</option>
+					</select>
+				</td>
+				<td>
+					<label for="txtFilePath">Sound Files Path</label>
+					<input type="text" name="filePath" id="txtFilePath" value="./sounds/">
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<br/>
+	<!-- Scene info -->
+	<table>
+		<tbody>
+			<tr>
+				<td><button id="btnNewTrack" type="button">Create New Track</button></td>
+				<td><button id="btnRemoveTracks" type="button">Remove New Track(s)</button></td>
+				<td>
+					<button id="btnPlayAll" type="button">Play All</button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<!-- Tracks table -->
+	<table>
+		<tbody id="trackBody">
+			<tr>
+				<td><input type="checkbox"  id="checkbox1"></td>
+				<td>
+					<audio id="audio1" controls>
+						<source id="audOggSrc" src="./sounds/thunder1.ogg" type="audio/ogg">
+						Your browser does not support the audio tag.
+					</audio>
+				</td>
+				<td>
+					<div class="slidecontainer">
+						<input type="range" min="1" max="100" value="100" class="slider" id="myRange">
+					</div>
+				</td>
+				<td>
+					<input id="txtFilename1" value="thunder1">
+					<input type="file" id="fileUpload">
+				</td>
+				<td>
+					<button id="btnPlayTrack1" type="button">Play</button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<br/>
+	<audio id="audio1" controls>
+		<source src="./sounds/thunder1.ogg" type="audio/ogg">
+		Your browser does not support the audio tag.
+	</audio>
+	<audio id="audio2" controls>
+		<source src="./sounds/thunder2.ogg" type="audio/ogg">
+		Your browser does not support the audio tag.
+	</audio>
+	<audio id="audio3" controls>
+		<source src="./sounds/gentle_rain.ogg" type="audio/ogg">
+		Your browser does not support the audio tag.
+	</audio>
+</body>
