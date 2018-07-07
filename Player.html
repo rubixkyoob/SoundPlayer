@@ -36,29 +36,29 @@
 			});
 		}
 		
-		function createTrack(id, filename="", volume=100) {
-			var row = $('<tr id="track' + id + '"></tr>');
-			row.append($('<td><input type="checkbox"  id="checkbox' + id + '"></td>'));
-			row.append($('<td><audio id="audio' + id + '" controls><source id="audOggSrc' + id + '" src="" type="audio/ogg">Your browser does not support the audio tag.</audio></td>'));
-			row.append($('<td><div class="slidecontainer"><input type="range" min="1" max="100" value="' + volume + '" class="slider" id="volume' + id + '"></div></td>'));
-			row.append($('<td><input type="file" id="fileUpload' + id + '"><input id="txtFilename' + id + '" value="' + filename + '"></td>'));
-			row.append($('<td><button id="btnPlayTrack' + id + '" type="button">Play</button></td>'));
-			$("#trackBody").append(row);
+		function createTrack(sceneId, trackId, filename="", volume=100) {
+			var row = $('<tr id="track' + trackId + '"></tr>');
+			row.append($('<td><input type="checkbox"  id="checkbox' + trackId + '"></td>'));
+			row.append($('<td><audio id="audio' + trackId + '" controls><source id="audOggSrc' + trackId + '" src="" type="audio/ogg">Your browser does not support the audio tag.</audio></td>'));
+			row.append($('<td><div class="slidecontainer"><input type="range" min="1" max="100" value="' + volume + '" class="slider" id="volume' + trackId + '"></div></td>'));
+			row.append($('<td><input type="file" id="fileUpload' + trackId + '"><input id="txtFilename' + trackId + '" value="' + filename + '"></td>'));
+			row.append($('<td><button id="btnPlayTrack' + trackId + '" type="button">Play</button></td>'));
+			$("#trackBody" + trackId + " tbody").append(row);
 			
 			// set listeners
 			$('input[type=file]').change(function () {
-				var filePath=$('#fileUpload' + id).val(); 
+				var filePath=$('#fileUpload' + trackId).val(); 
 				console.log(filePath);
-				$("#txtFilename" + id).val(filePath);
+				$("#txtFilename" + trackId).val(filePath);
 				
 			});
 			
 			tracks++;
 		}
 		
-		function removeTrack(id) {
-			if(id >= 0) {
-				$("#trackBody").remove("track" + id);
+		function removeTrack(sceneId, trackId) {
+			if(trackId >= 0) {
+				$("#trackBody" + sceneId).remove("track" + trackId);
 				tracks--;
 			}
 		}
@@ -106,9 +106,42 @@
 		</tbody>
 	</table>
 	<!-- Tracks table -->
-	<table>
-		<tbody id="trackBody">
-			<tr>
+	<table id="Scene1">
+	<tbody>
+		<tr>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>
+				<table id="trackBody1">
+					<tbody>
+						
+					</tbody>
+				</table>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+	<br/>
+	<!--
+	<audio id="audio1" controls>
+		<source src="./sounds/thunder1.ogg" type="audio/ogg">
+		Your browser does not support the audio tag.
+	</audio>
+	<audio id="audio2" controls>
+		<source src="./sounds/thunder2.ogg" type="audio/ogg">
+		Your browser does not support the audio tag.
+	</audio>
+	<audio id="audio3" controls>
+		<source src="./sounds/gentle_rain.ogg" type="audio/ogg">
+		Your browser does not support the audio tag.
+	</audio>-->
+</body>
+
+<!--
+<tr>
 				<td><input type="checkbox"  id="checkbox1"></td>
 				<td>
 					<audio id="audio1" controls>
@@ -129,19 +162,4 @@
 					<button id="btnPlayTrack1" type="button">Play</button>
 				</td>
 			</tr>
-		</tbody>
-	</table>
-	<br/>
-	<audio id="audio1" controls>
-		<source src="./sounds/thunder1.ogg" type="audio/ogg">
-		Your browser does not support the audio tag.
-	</audio>
-	<audio id="audio2" controls>
-		<source src="./sounds/thunder2.ogg" type="audio/ogg">
-		Your browser does not support the audio tag.
-	</audio>
-	<audio id="audio3" controls>
-		<source src="./sounds/gentle_rain.ogg" type="audio/ogg">
-		Your browser does not support the audio tag.
-	</audio>
-</body>
+-->
