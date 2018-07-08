@@ -18,13 +18,16 @@
 		//slider.oninput = function() {
 			// adjust volume
 		//}
-		var tracks = 0;
+		var scenes = 1;
+		var tracks = 1;
 		
 		$( document ).ready(function() {
 			
-			$("#btnNewTrack").click(function() {
-				createTrack(tracks);
+			$("#btnNewScene").click(function() {
+				createScene(scenes);
+				scenes++;
 			});
+			
 			
 		});
 		
@@ -36,21 +39,58 @@
 			});
 		}
 		
-		function createTrack(sceneId, trackId, filename="", volume=100) {
-			var row = $('<tr id="track' + trackId + '"></tr>');
-			row.append($('<td><input type="checkbox"  id="checkbox' + trackId + '"></td>'));
-			row.append($('<td><audio id="audio' + trackId + '" controls><source id="audOggSrc' + trackId + '" src="" type="audio/ogg">Your browser does not support the audio tag.</audio></td>'));
-			row.append($('<td><div class="slidecontainer"><input type="range" min="1" max="100" value="' + volume + '" class="slider" id="volume' + trackId + '"></div></td>'));
-			row.append($('<td><input type="file" id="fileUpload' + trackId + '"><input id="txtFilename' + trackId + '" value="' + filename + '"></td>'));
-			row.append($('<td><button id="btnPlayTrack' + trackId + '" type="button">Play</button></td>'));
-			$("#trackBody" + trackId + " tbody").append(row);
+		function createScene(sceneId) {
+			var row = $('<tr></tr>').append(
+				$('<td id="Scene' + sceneId + '"></td>').append(
+					$("#sceneTemplate").html()
+				)
+			);
+			$("#allScenes").append(row);
 			
 			// set listeners
-			$('input[type=file]').change(function () {
-				var filePath=$('#fileUpload' + trackId).val(); 
-				console.log(filePath);
-				$("#txtFilename" + trackId).val(filePath);
-				
+			$("#Scene" + sceneId + " .sceneTitle").text("SCENE " + sceneId);
+			$("#Scene" + sceneId + " .btnNewTrack").click(function() {
+				console.log("createTrack(" + sceneId + ", " + tracks + ")");
+				createTrack(sceneId, tracks);
+			});
+		}
+		
+		function createTrack(sceneId, trackId, defaultFilename="", defaultVolume=100) {
+			
+			var table = $('<table></table>').append(
+				$('<tbody></tbody>').append(
+					$('<tr></tr>').append(
+						$('<td id="Track' + trackId + '"></td>').append(
+							$("#trackTemplate").html()
+						)
+					)
+				)
+			);
+			
+			$("#Scene" + sceneId + " .trackTable").append(table);
+			
+			// set listeners
+			$("#Track" + trackId + " .fileUpload").change(function () {
+				var filePath=$("#Track" + trackId + " .fileUpload").val();
+				if (filePath) {
+					//parse the filename
+					var startIndex = (filePath.indexOf('\\') >= 0 ? filePath.lastIndexOf('\\') : filePath.lastIndexOf('/'));
+					var filename = filePath.substring(startIndex);
+					if (filename.indexOf('\\') === 0 || filename.indexOf('/') === 0) {
+						filename = filename.substring(1);
+					}
+					var txtTrackName = $("#Track" + trackId + " .txtFilename");
+					txtTrackName.val(filename);
+					txtTrackName.trigger("change");
+				}
+			});
+			
+			$("#Track" + trackId + " .txtFilename").change(function() {
+				var file = $("#txtFilePath").val() + $(this).val();
+				console.log('loading ' + file + '...');
+				$("#Track" + trackId + " .audMp3Src").attr("src",file);
+				$("#Track" + trackId + " .audOggSrc").attr("src",file);
+				$("#Track" + trackId + " .audio").attr("src",file);
 			});
 			
 			tracks++;
@@ -58,8 +98,7 @@
 		
 		function removeTrack(sceneId, trackId) {
 			if(trackId >= 0) {
-				$("#trackBody" + sceneId).remove("track" + trackId);
-				tracks--;
+				$("#trackTable" + sceneId).remove("track" + trackId);
 			}
 		}
 		
@@ -81,51 +120,88 @@
 					<button id="btnNewScene" type="button">Create New Scene</button>
 				</td>
 				<td>
-					<select id="selectTrack">
-						<option value="1">Scene 1</option>
-					</select>
-				</td>
-				<td>
 					<label for="txtFilePath">Sound Files Path</label>
 					<input type="text" name="filePath" id="txtFilePath" value="./sounds/">
 				</td>
 			</tr>
 		</tbody>
 	</table>
+	
 	<br/>
-	<!-- Scene info -->
+	
+	
+	
+	<!-- Scenes table -->
+	<table id="allScenes">
+		<tbody>
+			
+		</tbody>
+	</table>
+	
+</body>
+
+<div id="sceneTemplate" style="display:none;">
 	<table>
 		<tbody>
 			<tr>
-				<td><button id="btnNewTrack" type="button">Create New Track</button></td>
-				<td><button id="btnRemoveTracks" type="button">Remove New Track(s)</button></td>
+				<td><input type="checkbox"  class="sceneCheckbox"></td>
+				<td class="sceneTitle"></td>
+			</tr>
+			<tr>
+			<td></td>
 				<td>
-					<button id="btnPlayAll" type="button">Play All</button>
+					<!-- Scene Buttons -->
+					<table>
+						<tbody>
+							<tr>
+								<td><button class="btnNewTrack" type="button">Create New Track</button></td>
+								<td><button class="btnRemoveTracks" type="button">Remove New Track(s)</button></td>
+								<td><button class="btnPlayAll" type="button">Play All</button></td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td class="trackTable">
 				</td>
 			</tr>
 		</tbody>
 	</table>
-	<!-- Tracks table -->
-	<table id="Scene1">
-	<tbody>
-		<tr>
-			<td></td>
-			<td></td>
-		</tr>
-		<tr>
-			<td></td>
-			<td>
-				<table id="trackBody1">
-					<tbody>
-						
-					</tbody>
-				</table>
-			</td>
-		</tr>
+	<br/>
+</div>
+
+<div id="trackTemplate" style="display:none;">
+	<table>
+		<tbody>
+			<tr>
+				<td><input type="checkbox"  class="trackCheckbox"></td>
+				<td>
+					<audio class="audio" controls>
+						<source class="audMp3Src" src="" type="audio/mp3">
+						<source class="audOggSrc" src="" type="audio/ogg">
+						Your browser does not support the audio tag.
+					</audio>
+				</td>
+				<td>
+					<div class="slidecontainer">
+						<input type="range" min="1" max="100" value="100" class="volume">
+					</div>
+				</td>
+				<td>
+					<input class="txtFilename" value="">
+					<input type="file" class="fileUpload">
+				</td>
+				<td>
+					<button class="btnPlayTrack" type="button">Play</button>
+				</td>
+			</tr>
 		</tbody>
 	</table>
-	<br/>
-	<!--
+</div>
+
+<!--
 	<audio id="audio1" controls>
 		<source src="./sounds/thunder1.ogg" type="audio/ogg">
 		Your browser does not support the audio tag.
@@ -138,28 +214,3 @@
 		<source src="./sounds/gentle_rain.ogg" type="audio/ogg">
 		Your browser does not support the audio tag.
 	</audio>-->
-</body>
-
-<!--
-<tr>
-				<td><input type="checkbox"  id="checkbox1"></td>
-				<td>
-					<audio id="audio1" controls>
-						<source id="audOggSrc" src="./sounds/thunder1.ogg" type="audio/ogg">
-						Your browser does not support the audio tag.
-					</audio>
-				</td>
-				<td>
-					<div class="slidecontainer">
-						<input type="range" min="1" max="100" value="100" class="slider" id="myRange">
-					</div>
-				</td>
-				<td>
-					<input id="txtFilename1" value="thunder1">
-					<input type="file" id="fileUpload">
-				</td>
-				<td>
-					<button id="btnPlayTrack1" type="button">Play</button>
-				</td>
-			</tr>
--->
