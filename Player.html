@@ -8,16 +8,9 @@
 			background-color: white;
 		}
 	</style>
-	
+	<script src="./data.js" ></script>
 	<script type="text/javascript">
 		
-		
-		//var slider = document.getElementById("myRange");
-		
-		// Update the current slider value (each time you drag the slider handle)
-		//slider.oninput = function() {
-			// adjust volume
-		//}
 		var scenes = 1;
 		var tracks = 1;
 		
@@ -25,11 +18,65 @@
 			
 			$("#btnNewScene").click(function() {
 				createScene(scenes);
-				scenes++;
 			});
 			
+			loadScenes();
+			
+			//var myBlob = new Blob(["This is my blob content"], {type : "text/plain"});
+			//var myReader = new FileReader();
+			////handler executed once reading(blob content referenced to a variable) from blob is finished. 
+			//myReader.addEventListener("loadend", function(e){
+			//	alert(e.srcElement.result);//prints a string
+			//});
+			////start the reading process.
+			//myReader.readAsText(myBlob);
+			
+			//var client = new XMLHttpRequest();
+			//client.open('GET', 'save.json');
+			//client.onreadystatechange = function() {
+			//	alert(client.responseText);
+			//}
+			//client.send();
+			
+			//$.getJSON("save.json", function(json) {
+			//	console.log(json); // this will show the info it in firebug console
+			//});
 			
 		});
+		
+		function loadScenes() {
+			for(var s = 0; s < data.length; s++) {
+				createScene(data[s].id);
+				for(var t = 0; t < data[s].tracks.length; t++) {
+					createTrack(
+						data[s].id, 
+						data[s].tracks[t].id, 
+						data[s].tracks[t].filename, 
+						data[s].tracks[t].volume,
+						data[s].tracks[t].notes);
+				}
+			}
+		}
+		
+		function exportScenes() {
+			var exp = [];
+			
+			$('.scene').each(function(i, sobj) {
+				var s = {};
+				s.id = $(sobj).find(".sceneId").html();
+				s.tracks = [];
+				$('#Scene' + s.id + " .track").each(function(j, tobj) {
+					var t = {};
+					t.id = $(tobj).find(".trackId").html();
+					t.filename = $(tobj).find(".txtFilename").val();
+					t.volume = $(tobj).find(".volume").val();
+					t.notes = $(tobj).find(".notes").val();
+					s.tracks.push(t);
+				});
+				exp.push(s);
+			});
+			$("#exportTextArea").text(JSON.stringify(exp));
+		}
 		
 		function getFilePath(){
 			$('input[type=file]').change(function () {
@@ -41,11 +88,14 @@
 		
 		function createScene(sceneId) {
 			var row = $('<tr></tr>').append(
-				$('<td id="Scene' + sceneId + '"></td>').append(
+				$('<td id="Scene' + sceneId + '" class="scene"></td>').append(
 					$("#sceneTemplate").html()
 				)
 			);
 			$("#allScenes").append(row);
+			
+			// set vars
+			$("#Scene" + sceneId + " .sceneId").html(sceneId);
 			
 			// set listeners
 			$("#Scene" + sceneId + " .sceneTitle").text("SCENE " + sceneId);
@@ -53,14 +103,16 @@
 				console.log("createTrack(" + sceneId + ", " + tracks + ")");
 				createTrack(sceneId, tracks);
 			});
+			
+			scenes = parseInt(sceneId) + 1;
 		}
 		
-		function createTrack(sceneId, trackId, defaultFilename="", defaultVolume=100) {
+		function createTrack(sceneId, trackId, defaultFilename="", defaultVolume=50, defaultNotes="") {
 			
 			var table = $('<table></table>').append(
 				$('<tbody></tbody>').append(
 					$('<tr></tr>').append(
-						$('<td id="Track' + trackId + '"></td>').append(
+						$('<td id="Track' + trackId + '" class="track"></td>').append(
 							$("#trackTemplate").html()
 						)
 					)
@@ -68,6 +120,9 @@
 			);
 			
 			$("#Scene" + sceneId + " .trackTable").append(table);
+			
+			// set vars
+			$("#Track" + trackId + " .trackId").html(trackId);
 			
 			// set listeners
 			$("#Track" + trackId + " .fileUpload").change(function () {
@@ -84,7 +139,6 @@
 					txtTrackName.trigger("change");
 				}
 			});
-			
 			$("#Track" + trackId + " .txtFilename").change(function() {
 				var file = $("#txtFilePath").val() + $(this).val();
 				console.log('loading ' + file + '...');
@@ -92,8 +146,22 @@
 				$("#Track" + trackId + " .audOggSrc").attr("src",file);
 				$("#Track" + trackId + " .audio").attr("src",file);
 			});
+			$("#Track" + trackId + " .volume").change(function() {
+				$("#Track" + trackId + " .audio").prop("volume", $(this).val() / 100);
+			});
 			
-			tracks++;
+			// set defaults
+			if(defaultFilename !== "") {
+				var txtTrackName = $("#Track" + trackId + " .txtFilename");
+				txtTrackName.val(defaultFilename);
+				txtTrackName.trigger("change");
+			}
+			var volSlider = $("#Track" + trackId + " .volume");
+			volSlider.val(defaultVolume);
+			volSlider.trigger("change");
+			$("#Track" + trackId + " .notes").text(defaultNotes);
+			
+			tracks = parseInt(trackId) + 1;
 		}
 		
 		function removeTrack(sceneId, trackId) {
@@ -108,7 +176,31 @@
 			$("#audOggSrc" + id).attr("src",file);
 			document.getElementById('audio' + id).load();
 		}
+		
+		function saveData() {
+			download(data, "save.json", "application/json");
+		}
+		
+		// Function to download data to a file
+		function download(data, filename, type) {
+			var file = new Blob([data], {type: type});
+			if (window.navigator.msSaveOrOpenBlob) // IE10+
+				window.navigator.msSaveOrOpenBlob(file, filename);
+			else { // Others
+				var a = document.createElement("a"),
+						url = URL.createObjectURL(file);
+				a.href = url;
+				a.download = filename;
+				document.body.appendChild(a);
+				a.click();
+				setTimeout(function() {
+					document.body.removeChild(a);
+					window.URL.revokeObjectURL(url);  
+				}, 0); 
+			}
+		}
 	</script>
+	
 </head>
 <body bgcolor="#eeeeee">
 
@@ -116,12 +208,14 @@
 	<table>
 		<tbody>
 			<tr>
-				<td>
-					<button id="btnNewScene" type="button">Create New Scene</button>
-				</td>
+				<td><button id="btnExport" onclick="exportScenes()" type="button">Export</button></td>
+				<td><button id="btnNewScene" type="button">Create New Scene</button></td>
 				<td>
 					<label for="txtFilePath">Sound Files Path</label>
 					<input type="text" name="filePath" id="txtFilePath" value="./sounds/">
+				</td>
+				<td>
+					<textarea id="exportTextArea" readonly></textarea>
 				</td>
 			</tr>
 		</tbody>
@@ -143,6 +237,9 @@
 <div id="sceneTemplate" style="display:none;">
 	<table>
 		<tbody>
+			<tr>
+				<td class="sceneId" style="display:none;"></td>
+			</tr>
 			<tr>
 				<td><input type="checkbox"  class="sceneCheckbox"></td>
 				<td class="sceneTitle"></td>
@@ -176,6 +273,9 @@
 	<table>
 		<tbody>
 			<tr>
+				<td class="trackId" style="display:none;"></td>
+			</tr>
+			<tr>
 				<td><input type="checkbox"  class="trackCheckbox"></td>
 				<td>
 					<audio class="audio" controls>
@@ -194,8 +294,12 @@
 					<input type="file" class="fileUpload">
 				</td>
 				<td>
-					<button class="btnPlayTrack" type="button">Play</button>
+					<textarea class="notes" rows="4" cols="50">
+					</textarea>
 				</td>
+				<!--<td>
+					<button class="btnPlayTrack" type="button">Play</button>
+				</td>-->
 			</tr>
 		</tbody>
 	</table>
