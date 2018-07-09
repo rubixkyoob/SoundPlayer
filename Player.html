@@ -1,13 +1,49 @@
 <!DOCTYPE html>
+<html lang="en">
 <head>
 <title>Sound Player</title>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
+	<link rel="stylesheet" href="./css/bootstrap.min.css">
 	<style>
 		table {
 			background-color: white;
 		}
+		
+		th, td {
+			padding: 5px;
+		}
+		
+		.main {
+			padding: 10px;
+			background-color: gray;
+		}
+		
+		.glyphicon {
+			padding-right: 7px;
+		}
+		
+		.sceneTitle {
+			font-family: Courier;
+			font-weight: bold;
+			background-color: #ffdb89;
+			font-size: 20px;
+		}
+		
+		.notes {
+			font-family: Courier;
+		}
+		
+		input[type=range][orient=vertical]
+		{
+			writing-mode: bt-lr; /* IE */
+			-webkit-appearance: slider-vertical; /* WebKit */
+			width: 5px;
+			height: 100px;
+			padding: 5px 5px;
+		}
 	</style>
+	
+	
+	<script src="./js/jquery.min.js"></script>
 	<script src="./data.js" ></script>
 	<script type="text/javascript">
 		
@@ -202,23 +238,28 @@
 	</script>
 	
 </head>
-<body bgcolor="#eeeeee">
+<body class="main">
 
 	<!-- Global table -->
 	<table>
-		<tbody>
-			<tr>
-				<td><button id="btnExport" onclick="exportScenes()" type="button">Export</button></td>
-				<td><button id="btnNewScene" type="button">Create New Scene</button></td>
-				<td>
-					<label for="txtFilePath">Sound Files Path</label>
-					<input type="text" name="filePath" id="txtFilePath" value="./sounds/">
-				</td>
-				<td>
-					<textarea id="exportTextArea" readonly></textarea>
-				</td>
-			</tr>
-		</tbody>
+		<tr>
+			<td><button id="btnExport" onclick="exportScenes()" type="button">Export</button></td>
+			<td>
+				<textarea id="exportTextArea" readonly></textarea>
+			</td>
+			<td>
+				<label for="txtFilePath">Sound Files Path</label>
+				<input type="text" name="filePath" id="txtFilePath" value="./sounds/">
+			</td>
+			
+		</tr>
+		<tr>
+			<td>
+				<button id="btnNewScene" type="button" style="font-size: 15px;">
+					<span class="glyphicon glyphicon-plus"></span>Create New Scene
+				</button>
+			</td>
+		</tr>
 	</table>
 	
 	<br/>
@@ -251,9 +292,14 @@
 					<table>
 						<tbody>
 							<tr>
-								<td><button class="btnNewTrack" type="button">Create New Track</button></td>
-								<td><button class="btnRemoveTracks" type="button">Remove New Track(s)</button></td>
-								<td><button class="btnPlayAll" type="button">Play All</button></td>
+								<td>
+									<button class="btnNewTrack" type="button" style="font-size: 15px;">
+										<span class="glyphicon glyphicon-music"></span>
+										Create New Track
+									</button>
+								</td>
+								<!--<td><button class="btnRemoveTracks" type="button">Remove New Track(s)</button></td>-->
+								<!--<td><button class="btnPlayAll" type="button">Play All</button></td>-->
 							</tr>
 						</tbody>
 					</table>
@@ -284,22 +330,26 @@
 						Your browser does not support the audio tag.
 					</audio>
 				</td>
-				<td>
+				<td rowspan="2">
 					<div class="slidecontainer">
-						<input type="range" min="1" max="100" value="100" class="volume">
+						<input type="range" orient="vertical" min="0" max="100" value="100" class="volume">
 					</div>
 				</td>
-				<td>
-					<input class="txtFilename" value="">
-					<input type="file" class="fileUpload">
-				</td>
-				<td>
+				
+				<td rowspan="2">
 					<textarea class="notes" rows="4" cols="50">
 					</textarea>
 				</td>
 				<!--<td>
 					<button class="btnPlayTrack" type="button">Play</button>
 				</td>-->
+			</tr>
+			<tr>
+				<td></td>
+				<td>
+					<span><input class="txtFilename" value=""></span>
+					<input type="file" class="fileUpload">
+				</td>
 			</tr>
 		</tbody>
 	</table>
@@ -318,3 +368,5 @@
 		<source src="./sounds/gentle_rain.ogg" type="audio/ogg">
 		Your browser does not support the audio tag.
 	</audio>-->
+	
+</html>
