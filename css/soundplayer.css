@@ -1,0 +1,42 @@
+/* 
+Custom Sound Player CSS 
+P. Kalmar
+2018
+*/
+
+table {
+	background-color: white;
+}
+
+th, td {
+	padding: 5px;
+}
+
+.main {
+	padding: 10px;
+	background-color: gray;
+}
+
+.glyphicon {
+	padding-right: 7px;
+}
+
+.sceneTitle {
+	font-family: Courier;
+	font-weight: bold;
+	background-color: #ffdb89;
+	font-size: 20px;
+}
+
+.notes {
+	font-family: Courier;
+}
+
+input[type=range][orient=vertical]
+{
+	writing-mode: bt-lr; /* IE */
+	-webkit-appearance: slider-vertical; /* WebKit */
+	width: 5px;
+	height: 100px;
+	padding: 5px 5px;
+}
