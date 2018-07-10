@@ -26,19 +26,20 @@ $( document ).ready(function() {
 
 ////////////////////
 // Scene Management
-function createScene(sceneId) {
-	var row = $('<tr></tr>').append(
-		$('<td id="Scene' + sceneId + '" class="scene td-center"></td>').append(
-			$("#sceneTemplate").html()
-		)
-	);
+function createScene(sceneId, defaultName) {
+	
+	if(defaultName == undefined || defaultName == null) {
+		defaultName = "SCENE " + sceneId;
+	}
+	
+	var row = $('<div id="Scene' + sceneId + '" class="scene center"></div>').append($("#sceneTemplate").html());
 	$("#allScenes").append(row);
 	
 	// set vars
 	$("#Scene" + sceneId + " .sceneId").html(sceneId);
 	
 	// set listeners
-	$("#Scene" + sceneId + " .sceneTitle").text("SCENE " + sceneId);
+	$("#Scene" + sceneId + " .sceneTitle").text(defaultName);
 	$("#Scene" + sceneId + " .btnNewTrack").click(function() {
 		console.log("createTrack(" + sceneId + ", " + tracks + ")");
 		createTrack(sceneId, tracks);
@@ -65,17 +66,18 @@ function removeScene(sceneId) {
 	$("#Scene" + sceneId).remove();
 }
 
-function createTrack(sceneId, trackId, defaultFilename="", defaultVolume=50, defaultNotes="") {
+function createTrack(sceneId, trackId, defaultFilename, defaultVolume, defaultNotes) {
 	
-	var table = $('<table></table>').append(
-		$('<tbody></tbody>').append(
-			$('<tr></tr>').append(
-				$('<td id="Track' + trackId + '" class="track"></td>').append(
-					$("#trackTemplate").html()
-				)
-			)
-		)
-	);
+	if(defaultFilename == undefined || defaultFilename == null) {
+		defaultFilename = "";
+	}
+	if(defaultVolume == undefined || defaultVolume == null) {
+		defaultVolume = 50;
+	}
+	if(defaultNotes == undefined || defaultNotes == null) {
+		defaultNotes = "";
+	}
+	
 	var table = $('<div id="Track' + trackId + '" class="track"></div>').append($("#trackTemplate").html());
 	
 	$("#Scene" + sceneId + " .trackTable").append(table);
@@ -159,7 +161,7 @@ function loadScenes(data) {
 	
 	// load info
 	for(var s = 0; s < data.length; s++) {
-		createScene(data[s].id);
+		createScene(data[s].id, data[s].name);
 		for(var t = 0; t < data[s].tracks.length; t++) {
 			createTrack(
 				data[s].id, 
@@ -177,6 +179,7 @@ function exportScenes() {
 	$('.scene').each(function(i, sobj) {
 		var s = {};
 		s.id = $(sobj).find(".sceneId").html();
+		s.name = $(sobj).find(".sceneTitle").html();
 		s.tracks = [];
 		$('#Scene' + s.id + " .track").each(function(j, tobj) {
 			var t = {};
@@ -189,7 +192,6 @@ function exportScenes() {
 		exp.push(s);
 	});
 	download(JSON.stringify(exp), "data.json", "application/json");
-	//$("#exportTextArea").text(JSON.stringify(exp));
 }
 
 // Function to download data to a file
