@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Sound Player</title>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	
+	<title>Sound Player</title>
+	
 	<link rel="stylesheet" href="./css/bootstrap.min.css">
 	<link rel="stylesheet" href="./css/soundplayer.css">
 	
@@ -28,9 +32,7 @@
 		</tr>
 		<tr>
 			<td>
-				<button id="btnNewScene" type="button" style="font-size: 15px;">
-					<span class="glyphicon glyphicon-plus"></span>Create New Scene
-				</button>
+				
 			</td>
 		</tr>
 	</table>
@@ -38,13 +40,25 @@
 	<br/>
 	
 	
-	
-	<!-- Scenes table -->
-	<table id="allScenes">
-		<tbody>
-			
-		</tbody>
+	<table class="width-full">
+		<tr>
+			<td class="td-center">
+				<!-- Scenes table -->
+				<table id="allScenes" class="width-full">
+				</table>
+				<table class="width-full">
+					<tr>
+						<td class="td-center">
+							<button id="btnNewScene" type="button" class="btn btn-default" style="font-size: 15px;font-weight:bold;">
+								<span class="glyphicon glyphicon-plus"></span>New Scene
+							</button>
+						<td>
+					</tr>
+				</table>
+			</td>
+		</tr>
 	</table>
+	
 	
 </body>
 
@@ -55,31 +69,32 @@
 				<td class="sceneId" style="display:none;"></td>
 			</tr>
 			<tr>
-				<td><input type="checkbox"  class="sceneCheckbox"></td>
+				<td><div class="sceneRemove hover"><span class="glyphicon glyphicon-remove"></span></div></td>
 				<td class="sceneTitle"></td>
 			</tr>
 			<tr>
-			<td></td>
-				<td>
-					<!-- Scene Buttons -->
-					<table>
-						<tbody>
-							<tr>
-								<td>
-									<button class="btnNewTrack" type="button" style="font-size: 15px;">
-										<span class="glyphicon glyphicon-music"></span>
-										Create New Track
-									</button>
-								</td>
-								<!--<td><button class="btnPlayAll" type="button">Play All</button></td>-->
-							</tr>
-						</tbody>
-					</table>
-				</td>
-			</tr>
-			<tr>
 				<td></td>
-				<td class="trackTable">
+				<td>
+					<div class="hider">
+						<!-- Scene Info -->
+						<table>
+							<tbody>
+								<tr>
+									<td>
+										<button class="btnNewTrack btn btn-default" type="button" style="font-size: 15px;font-weight: bold;">
+											<span class="glyphicon glyphicon-music"></span>
+											Add Track
+										</button>
+									</td>
+									<!--<td><button class="btnPlayAll" type="button">Play All</button></td>-->
+								</tr>
+								<tr>
+									<td class="trackTable">
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 				</td>
 			</tr>
 		</tbody>
@@ -102,13 +117,22 @@
 						Your browser does not support the audio tag.
 					</audio>
 				</td>
-				<td rowspan="2">
+				<td rowspan="3">
 					<div class="slidecontainer">
 						<input type="range" orient="vertical" min="0" max="100" value="100" class="volume">
 					</div>
 				</td>
-				
-				<td rowspan="2">
+				<td rowspan="3">
+					<button class="btnVolumeAdd btn btn-default btn-sm" type="button" style="font-size: 10px;font-weight: bold;padding-right:0px;">
+						<span class="glyphicon glyphicon-plus"></span>
+					</button>
+					<div class="ttlVolume">Volume</div>
+					<div class="txtVolume"></div>
+					<button class="btnVolumeSub btn btn-default btn-sm" type="button" style="font-size: 10px;font-weight: bold;padding-right:0px;">
+						<span class="glyphicon glyphicon-minus"></span>
+					</button>
+				</td>
+				<td rowspan="3">
 					<textarea class="notes" rows="5" cols="50">
 					</textarea>
 				</td>
@@ -118,8 +142,13 @@
 			</tr>
 			<tr>
 				<td></td>
-				<td>
-					<span><input class="txtFilename" value=""></span>
+				<td style="text-align:left;">
+					<input class="txtFilename" value="">
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td style="text-align:left;">
 					<input type="file" class="fileUpload">
 				</td>
 			</tr>

@@ -21,6 +21,15 @@ th, td {
 	padding-right: 7px;
 }
 
+.width-full {
+	width: 100%;
+}
+
+.td-center {
+	text-align: center;
+	
+}
+
 .sceneTitle {
 	font-family: Courier;
 	font-weight: bold;
@@ -37,6 +46,6 @@ input[type=range][orient=vertical]
 	writing-mode: bt-lr; /* IE */
 	-webkit-appearance: slider-vertical; /* WebKit */
 	width: 5px;
-	height: 100px;
+	height: 125px;
 	padding: 5px 5px;
 }

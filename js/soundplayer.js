@@ -28,7 +28,7 @@ $( document ).ready(function() {
 // Scene Management
 function createScene(sceneId) {
 	var row = $('<tr></tr>').append(
-		$('<td id="Scene' + sceneId + '" class="scene"></td>').append(
+		$('<td id="Scene' + sceneId + '" class="scene td-center"></td>').append(
 			$("#sceneTemplate").html()
 		)
 	);
@@ -87,7 +87,16 @@ function createTrack(sceneId, trackId, defaultFilename="", defaultVolume=50, def
 		$("#Track" + trackId + " .audio").attr("src",file);
 	});
 	$("#Track" + trackId + " .volume").change(function() {
+		$("#Track" + trackId + " .txtVolume").html($(this).val());
 		$("#Track" + trackId + " .audio").prop("volume", $(this).val() / 100);
+	});
+	$("#Track" + trackId + " .btnVolumeAdd").click(function() {
+		$("#Track" + trackId + " .volume").val(parseInt($("#Track" + trackId + " .volume").val()) + 1);
+		$("#Track" + trackId + " .volume").trigger("change");
+	});
+	$("#Track" + trackId + " .btnVolumeSub").click(function() {
+		$("#Track" + trackId + " .volume").val(parseInt($("#Track" + trackId + " .volume").val()) - 1);
+		$("#Track" + trackId + " .volume").trigger("change");
 	});
 	
 	// set defaults
