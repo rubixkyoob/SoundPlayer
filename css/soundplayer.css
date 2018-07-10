@@ -25,15 +25,21 @@ th, td {
 	width: 100%;
 }
 
-.td-center {
+.center {
 	text-align: center;
-	
+}
+
+.hover {
+	opacity: 0.5;
+}
+
+.header-panel {
+	display: inline-block;
 }
 
 .sceneTitle {
 	font-family: Courier;
 	font-weight: bold;
-	background-color: #ffdb89;
 	font-size: 20px;
 }
 

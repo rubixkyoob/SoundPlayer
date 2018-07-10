@@ -43,8 +43,26 @@ function createScene(sceneId) {
 		console.log("createTrack(" + sceneId + ", " + tracks + ")");
 		createTrack(sceneId, tracks);
 	});
+	$("#Scene" + sceneId + " .removeScene").click(function() {
+		var r = confirm("Are you sure you want to remove this Scene?");
+		if(r) {
+			removeScene(sceneId);
+		}
+	});
+	$("#Scene" + sceneId + " .removeScene").hover(
+		function() {
+			$( this ).removeClass("hover");
+		}, 
+		function() {
+			$( this ).addClass("hover");
+		}
+	);
 	
 	scenes = parseInt(sceneId) + 1;
+}
+
+function removeScene(sceneId) {
+	$("#Scene" + sceneId).remove();
 }
 
 function createTrack(sceneId, trackId, defaultFilename="", defaultVolume=50, defaultNotes="") {
@@ -58,6 +76,7 @@ function createTrack(sceneId, trackId, defaultFilename="", defaultVolume=50, def
 			)
 		)
 	);
+	var table = $('<div id="Track' + trackId + '" class="track"></div>').append($("#trackTemplate").html());
 	
 	$("#Scene" + sceneId + " .trackTable").append(table);
 	
@@ -98,6 +117,20 @@ function createTrack(sceneId, trackId, defaultFilename="", defaultVolume=50, def
 		$("#Track" + trackId + " .volume").val(parseInt($("#Track" + trackId + " .volume").val()) - 1);
 		$("#Track" + trackId + " .volume").trigger("change");
 	});
+	$("#Track" + trackId + " .removeTrack").click(function() {
+		var r = confirm("Are you sure you want to remove this Track?");
+		if(r) {
+			removeTrack(trackId);
+		}
+	});
+	$("#Track" + trackId + " .removeTrack").hover(
+		function() {
+			$( this ).removeClass("hover");
+		}, 
+		function() {
+			$( this ).addClass("hover");
+		}
+	);
 	
 	// set defaults
 	if(defaultFilename !== "") {
@@ -113,15 +146,18 @@ function createTrack(sceneId, trackId, defaultFilename="", defaultVolume=50, def
 	tracks = parseInt(trackId) + 1;
 }
 
-function removeTrack(sceneId, trackId) {
-	if(trackId >= 0) {
-		$("#trackTable" + sceneId).remove("track" + trackId);
-	}
+function removeTrack(trackId) {
+	$("#Track" + trackId).remove();
 }
 
 //////////////////
 // Save/Load Files
 function loadScenes(data) {
+	
+	//clear everything
+	$("#allScenes").html("");
+	
+	// load info
 	for(var s = 0; s < data.length; s++) {
 		createScene(data[s].id);
 		for(var t = 0; t < data[s].tracks.length; t++) {
