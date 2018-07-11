@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Sound Player</title>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	
+	<title>Sound Player</title>
+	
 	<link rel="stylesheet" href="./css/bootstrap.min.css">
 	<link rel="stylesheet" href="./css/soundplayer.css">
 	
@@ -12,119 +16,140 @@
 <body class="main">
 
 	<!-- Global table -->
-	<table>
-		<tr>
-			<td><button id="btnExport" onclick="exportScenes()" type="button">Export</button></td>
-			<td>
-				<textarea id="exportTextArea" readonly></textarea>
-			</td>
-			<td>
-				<label for="txtFilePath">Sound Files Path</label>
-				<input type="text" name="filePath" id="txtFilePath" value="./sounds/">
-			</td>
-			<td>
-				<input id="fileLoad" type="file">
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<button id="btnNewScene" type="button" style="font-size: 15px;">
-					<span class="glyphicon glyphicon-plus"></span>Create New Scene
-				</button>
-			</td>
-		</tr>
-	</table>
-	
-	<br/>
-	
-	
-	
-	<!-- Scenes table -->
-	<table id="allScenes">
-		<tbody>
+	<div class="width-full">
+		<div class="panel panel-default center">
+			<div class="panel-body">
 			
-		</tbody>
-	</table>
-	
-</body>
-
-<div id="sceneTemplate" style="display:none;">
-	<table>
-		<tbody>
-			<tr>
-				<td class="sceneId" style="display:none;"></td>
-			</tr>
-			<tr>
-				<td><input type="checkbox"  class="sceneCheckbox"></td>
-				<td class="sceneTitle"></td>
-			</tr>
-			<tr>
-			<td></td>
-				<td>
-					<!-- Scene Buttons -->
-					<table>
-						<tbody>
-							<tr>
-								<td>
-									<button class="btnNewTrack" type="button" style="font-size: 15px;">
-										<span class="glyphicon glyphicon-music"></span>
-										Create New Track
-									</button>
-								</td>
-								<!--<td><button class="btnPlayAll" type="button">Play All</button></td>-->
-							</tr>
-						</tbody>
-					</table>
-				</td>
-			</tr>
-			<tr>
-				<td></td>
-				<td class="trackTable">
-				</td>
-			</tr>
-		</tbody>
-	</table>
-	<br/>
-</div>
-
-<div id="trackTemplate" style="display:none;">
-	<table>
-		<tbody>
-			<tr>
-				<td class="trackId" style="display:none;"></td>
-			</tr>
-			<tr>
-				<td><input type="checkbox"  class="trackCheckbox"></td>
-				<td>
-					<audio class="audio" controls>
-						<source class="audMp3Src" src="" type="audio/mp3">
-						<source class="audOggSrc" src="" type="audio/ogg">
-						Your browser does not support the audio tag.
-					</audio>
-				</td>
-				<td rowspan="2">
-					<div class="slidecontainer">
-						<input type="range" orient="vertical" min="0" max="100" value="100" class="volume">
+				<div class="panel panel-default header-panel">
+					<div class="panel-heading">
+						Sound Files Path
 					</div>
-				</td>
+					<div class="panel-body">
+						<input type="text" name="filePath" id="txtFilePath" value="./sounds/">
+					</div>
+				</div>
 				
-				<td rowspan="2">
-					<textarea class="notes" rows="5" cols="50">
-					</textarea>
-				</td>
-				<!--<td>
-					<button class="btnPlayTrack" type="button">Play</button>
-				</td>-->
-			</tr>
-			<tr>
-				<td></td>
-				<td>
-					<span><input class="txtFilename" value=""></span>
-					<input type="file" class="fileUpload">
-				</td>
-			</tr>
-		</tbody>
-	</table>
-</div>
+				<div class="panel panel-default header-panel">
+					<div class="panel-heading">
+						<span class="glyphicon glyphicon-download-alt"></span>
+						Save File
+					</div>
+					<div class="panel-body">
+						<button id="btnExport" type="button" onclick="exportScenes()" class="btn btn-default" style="font-size: 15px;font-weight:bold;">
+							Download
+						</button>
+					</div>
+				</div>
+				
+				<div class="panel panel-default header-panel">
+					<div class="panel-heading">
+						<span class="glyphicon glyphicon-folder-open"></span>
+						Load File
+					</div>
+					<div class="panel-body">
+						<input id="fileLoad" type="file">
+					</div>
+				</div>
+				
+			</div>
+		</div>
+		<br/>
+		
+		
+		<div class="width-full center">
+			<!-- Scenes table -->
+			<div id="allScenes"></div>
+			<div>
+				<button id="btnNewScene" type="button" class="btn btn-default" style="font-size: 15px;font-weight:bold;">
+					<span class="glyphicon glyphicon-plus"></span>New Scene
+				</button>
+			</div>
+		</div>
+		
+	</div> <!-- FULL WIDTH CENTER -->
 	
+	<div id="sceneTemplate" style="display:none;">
+		<div class="sceneId" style="display:none;"></div>
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				
+				<div style="display:inline-block;">
+					<div class="removeScene hover"><span class="glyphicon glyphicon-remove"></span></div>
+				</div>
+				<div style="display:inline-block;">
+					<div class="sceneTitle"></div>
+				</div>
+				<div style="display:inline-block;">
+					
+				</div>
+			</div>
+			<div class="panel-body">
+				<button class="btnNewTrack btn btn-default" type="button" style="font-size: 15px;font-weight: bold;">
+					<span class="glyphicon glyphicon-music"></span>
+					Add Track
+				</button>
+				<div class="trackTable"></div>
+			</div>
+		</div>
+		<br/>
+	</div>
+	
+	<div id="trackTemplate" style="display:none;">
+		<div class="panel panel-default" style="margin-bottom:0;margin-top:5px;">
+			<div class="panel-body">
+				<table>
+					<tr>
+						<td class="trackId" style="display:none;"></td>
+					</tr>
+					<tr>
+						<td rowspan="3">
+							<div style="display:inline-block;">
+								<div class="removeTrack hover"><span class="glyphicon glyphicon-remove"></span></div>
+							</div>
+						</td>
+						<td>
+							<audio class="audio" controls>
+								<source class="audMp3Src" src="" type="audio/mp3">
+								<source class="audOggSrc" src="" type="audio/ogg">
+								Your browser does not support the audio tag.
+							</audio>
+						</td>
+						<td rowspan="3">
+							<div class="slidecontainer">
+								<input type="range" orient="vertical" min="0" max="100" value="100" class="volume">
+							</div>
+						</td>
+						<td rowspan="3">
+							<button class="btnVolumeAdd btn btn-default btn-sm" type="button" style="font-size: 10px;font-weight: bold;padding-right:0px;">
+								<span class="glyphicon glyphicon-plus"></span>
+							</button>
+							<div class="ttlVolume">Volume</div>
+							<div class="txtVolume"></div>
+							<button class="btnVolumeSub btn btn-default btn-sm" type="button" style="font-size: 10px;font-weight: bold;padding-right:0px;">
+								<span class="glyphicon glyphicon-minus"></span>
+							</button>
+						</td>
+						<td rowspan="3">
+							<textarea class="notes" rows="5" cols="50">
+							</textarea>
+						</td>
+						<!--<td>
+							<button class="btnPlayTrack" type="button">Play</button>
+						</td>-->
+					</tr>
+					<tr>
+						<td style="text-align:left;">
+							<input class="txtFilename" value="">
+						</td>
+					</tr>
+					<tr>
+						<td style="text-align:left;">
+							<input type="file" class="fileUpload">
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</body>
 </html>

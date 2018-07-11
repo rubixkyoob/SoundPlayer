@@ -21,10 +21,25 @@ th, td {
 	padding-right: 7px;
 }
 
+.width-full {
+	width: 100%;
+}
+
+.center {
+	text-align: center;
+}
+
+.hover {
+	opacity: 0.5;
+}
+
+.header-panel {
+	display: inline-block;
+}
+
 .sceneTitle {
 	font-family: Courier;
 	font-weight: bold;
-	background-color: #ffdb89;
 	font-size: 20px;
 }
 
@@ -37,6 +52,6 @@ input[type=range][orient=vertical]
 	writing-mode: bt-lr; /* IE */
 	-webkit-appearance: slider-vertical; /* WebKit */
 	width: 5px;
-	height: 100px;
+	height: 125px;
 	padding: 5px 5px;
 }
