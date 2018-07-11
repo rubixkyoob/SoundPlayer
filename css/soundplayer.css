@@ -52,6 +52,6 @@ input[type=range][orient=vertical]
 	writing-mode: bt-lr; /* IE */
 	-webkit-appearance: slider-vertical; /* WebKit */
 	width: 5px;
-	height: 125px;
+	height: 150px;
 	padding: 5px 5px;
 }

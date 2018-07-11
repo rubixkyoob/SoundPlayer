@@ -66,7 +66,7 @@ function removeScene(sceneId) {
 	$("#Scene" + sceneId).remove();
 }
 
-function createTrack(sceneId, trackId, defaultFilename, defaultVolume, defaultNotes) {
+function createTrack(sceneId, trackId, defaultFilename, defaultVolume, defaultNotes, defaultLoop) {
 	
 	if(defaultFilename == undefined || defaultFilename == null) {
 		defaultFilename = "";
@@ -76,6 +76,9 @@ function createTrack(sceneId, trackId, defaultFilename, defaultVolume, defaultNo
 	}
 	if(defaultNotes == undefined || defaultNotes == null) {
 		defaultNotes = "";
+	}
+	if(defaultLoop == undefined || defaultLoop == null) {
+		defaultLoop = false;
 	}
 	
 	var table = $('<div id="Track' + trackId + '" class="track"></div>').append($("#trackTemplate").html());
@@ -146,9 +149,6 @@ function createTrack(sceneId, trackId, defaultFilename, defaultVolume, defaultNo
 		var	 aud = track.find(".audio");
 		aud.trigger("pause");
 		aud.prop("currentTime",0);
-		aud.removeClass("playing");
-		$(this).find(".glyphicon-play").addClass("hide");
-		$(this).find(".glyphicon-pause").removeClass("hide");
 	});
 	track.find(".btnFadeInTrack").click(function() {
 		var	 aud = track.find(".audio");
@@ -161,14 +161,18 @@ function createTrack(sceneId, trackId, defaultFilename, defaultVolume, defaultNo
 		}
 	});
 	track.find(".audio")[0].addEventListener("play", function() {
+		console.log("playing");
 		$(this).addClass("playing");
-		$(this).find(".glyphicon-play").addClass("hide");
-		$(this).find(".glyphicon-pause").removeClass("hide");
+		track.find(".btnPlayTrack .glyphicon-play").addClass("hide");
+		track.find(".btnPlayTrack .glyphicon-pause").removeClass("hide");
 	});
 	track.find(".audio")[0].addEventListener("pause", function() {
 		$(this).removeClass("playing");
-		$(this).find(".glyphicon-play").removeClass("hide");
-		$(this).find(".glyphicon-pause").addClass("hide");
+		track.find(".glyphicon-play").removeClass("hide");
+		track.find(".glyphicon-pause").addClass("hide");
+	});
+	track.find(".loopCheckbox").change(function() {
+		track.find(".audio").prop("loop", $(this).prop("checked"));
 	});
 	
 	// set defaults
@@ -181,6 +185,9 @@ function createTrack(sceneId, trackId, defaultFilename, defaultVolume, defaultNo
 	volSlider.val(defaultVolume);
 	volSlider.trigger("change");
 	track.find(".notes").text(defaultNotes);
+	var loopChkbox = track.find(".loopCheckbox");
+	loopChkbox.prop("checked", defaultLoop);
+	loopChkbox.trigger("change");
 	
 	tracks = parseInt(trackId) + 1;
 }
@@ -200,10 +207,12 @@ function fadeIn(aud, slider) {
 	slider.trigger("change");
 	aud.trigger("play");
 	
+	
 	function fadeinstep(timestamp) {
 		if (!start) start = timestamp;
 		var progress = timestamp - start;
-		if(slider.val() < startVol) {
+		
+		if(parseInt(slider.val()) < parseInt(startVol)) {
 			slider.val(parseInt(slider.val()) + 1);
 			slider.trigger("change");
 		}
@@ -226,7 +235,7 @@ function fadeOut(aud, slider) {
 	function fadeoutstep(timestamp) {
 		if (!start) start = timestamp;
 		var progress = timestamp - start;
-		if(slider.val() > 0) {
+		if(parseInt(slider.val()) > 0) {
 			slider.val(parseInt(slider.val()) - 1);
 			slider.trigger("change");
 		}
@@ -265,7 +274,8 @@ function loadScenes(data) {
 				data[s].tracks[t].id, 
 				data[s].tracks[t].filename, 
 				data[s].tracks[t].volume,
-				data[s].tracks[t].notes);
+				data[s].tracks[t].notes,
+				data[s].tracks[t].loop);
 		}
 	}
 }
@@ -284,6 +294,7 @@ function exportScenes() {
 			t.filename = $(tobj).find(".txtFilename").val();
 			t.volume = $(tobj).find(".volume").val();
 			t.notes = $(tobj).find(".notes").val();
+			t.loop = $(tobj).find(".loopCheckbox").prop("checked");
 			s.tracks.push(t);
 		});
 		exp.push(s);
