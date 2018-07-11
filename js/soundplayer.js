@@ -81,13 +81,13 @@ function createTrack(sceneId, trackId, defaultFilename, defaultVolume, defaultNo
 	var table = $('<div id="Track' + trackId + '" class="track"></div>').append($("#trackTemplate").html());
 	
 	$("#Scene" + sceneId + " .trackTable").append(table);
-	
+	var track = $("#Track" + trackId);
 	// set vars
-	$("#Track" + trackId + " .trackId").html(trackId);
+	track.find(".trackId").html(trackId);
 	
 	// set listeners
-	$("#Track" + trackId + " .fileUpload").change(function () {
-		var filePath=$("#Track" + trackId + " .fileUpload").val();
+	track.find(".fileUpload").change(function () {
+		var filePath = track.find(".fileUpload").val();
 		if (filePath) {
 			//parse the filename
 			var startIndex = (filePath.indexOf('\\') >= 0 ? filePath.lastIndexOf('\\') : filePath.lastIndexOf('/'));
@@ -95,37 +95,37 @@ function createTrack(sceneId, trackId, defaultFilename, defaultVolume, defaultNo
 			if (filename.indexOf('\\') === 0 || filename.indexOf('/') === 0) {
 				filename = filename.substring(1);
 			}
-			var txtTrackName = $("#Track" + trackId + " .txtFilename");
+			var txtTrackName = track.find(".txtFilename");
 			txtTrackName.val(filename);
 			txtTrackName.trigger("change");
 		}
 	});
-	$("#Track" + trackId + " .txtFilename").change(function() {
+	track.find(".txtFilename").change(function() {
 		var file = $("#txtFilePath").val() + $(this).val();
 		console.log('loading ' + file + '...');
-		$("#Track" + trackId + " .audMp3Src").attr("src",file);
-		$("#Track" + trackId + " .audOggSrc").attr("src",file);
-		$("#Track" + trackId + " .audio").attr("src",file);
+		track.find(".audMp3Src").attr("src",file);
+		track.find(".audOggSrc").attr("src",file);
+		track.find(".audio").attr("src",file);
 	});
-	$("#Track" + trackId + " .volume").change(function() {
-		$("#Track" + trackId + " .txtVolume").html($(this).val());
-		$("#Track" + trackId + " .audio").prop("volume", $(this).val() / 100);
+	track.find(".volume").change(function() {
+		track.find(".txtVolume").html($(this).val());
+		track.find(".audio").prop("volume", $(this).val() / 100);
 	});
-	$("#Track" + trackId + " .btnVolumeAdd").click(function() {
-		$("#Track" + trackId + " .volume").val(parseInt($("#Track" + trackId + " .volume").val()) + 1);
-		$("#Track" + trackId + " .volume").trigger("change");
+	track.find(".btnVolumeAdd").click(function() {
+		track.find(".volume").val(parseInt(track.find(".volume").val()) + 1);
+		track.find(".volume").trigger("change");
 	});
-	$("#Track" + trackId + " .btnVolumeSub").click(function() {
-		$("#Track" + trackId + " .volume").val(parseInt($("#Track" + trackId + " .volume").val()) - 1);
-		$("#Track" + trackId + " .volume").trigger("change");
+	track.find(".btnVolumeSub").click(function() {
+		track.find(".volume").val(parseInt(track.find(".volume").val()) - 1);
+		track.find(".volume").trigger("change");
 	});
-	$("#Track" + trackId + " .removeTrack").click(function() {
+	track.find(".removeTrack").click(function() {
 		var r = confirm("Are you sure you want to remove this Track?");
 		if(r) {
 			removeTrack(trackId);
 		}
 	});
-	$("#Track" + trackId + " .removeTrack").hover(
+	track.find(".removeTrack").hover(
 		function() {
 			$( this ).removeClass("hover");
 		}, 
@@ -133,23 +133,120 @@ function createTrack(sceneId, trackId, defaultFilename, defaultVolume, defaultNo
 			$( this ).addClass("hover");
 		}
 	);
+	track.find(".btnPlayTrack").click(function() {
+		var	 aud = track.find(".audio");
+		if(!aud.hasClass("playing")) {
+			aud.trigger("play");
+		}
+		else {
+			aud.trigger("pause");
+		}
+	});
+	track.find(".btnRestartTrack").click(function() {
+		var	 aud = track.find(".audio");
+		aud.trigger("pause");
+		aud.prop("currentTime",0);
+		aud.removeClass("playing");
+		$(this).find(".glyphicon-play").addClass("hide");
+		$(this).find(".glyphicon-pause").removeClass("hide");
+	});
+	track.find(".btnFadeInTrack").click(function() {
+		var	 aud = track.find(".audio");
+		fadeIn(aud, track.find(".volume"));
+	});
+	track.find(".btnFadeOutTrack").click(function() {
+		var	 aud = track.find(".audio");
+		if(aud.hasClass("playing")) {
+			fadeOut(aud, track.find(".volume"));
+		}
+	});
+	track.find(".audio")[0].addEventListener("play", function() {
+		$(this).addClass("playing");
+		$(this).find(".glyphicon-play").addClass("hide");
+		$(this).find(".glyphicon-pause").removeClass("hide");
+	});
+	track.find(".audio")[0].addEventListener("pause", function() {
+		$(this).removeClass("playing");
+		$(this).find(".glyphicon-play").removeClass("hide");
+		$(this).find(".glyphicon-pause").addClass("hide");
+	});
 	
 	// set defaults
 	if(defaultFilename !== "") {
-		var txtTrackName = $("#Track" + trackId + " .txtFilename");
+		var txtTrackName = track.find(".txtFilename");
 		txtTrackName.val(defaultFilename);
 		txtTrackName.trigger("change");
 	}
-	var volSlider = $("#Track" + trackId + " .volume");
+	var volSlider = track.find(".volume");
 	volSlider.val(defaultVolume);
 	volSlider.trigger("change");
-	$("#Track" + trackId + " .notes").text(defaultNotes);
+	track.find(".notes").text(defaultNotes);
 	
 	tracks = parseInt(trackId) + 1;
 }
 
 function removeTrack(trackId) {
 	$("#Track" + trackId).remove();
+}
+
+///////////////////
+// Action functions
+
+function fadeIn(aud, slider) {
+	var start = null;
+	var startVol = slider.val();
+	var duration = 3000;
+	slider.val(0);
+	slider.trigger("change");
+	aud.trigger("play");
+	
+	function fadeinstep(timestamp) {
+		if (!start) start = timestamp;
+		var progress = timestamp - start;
+		if(slider.val() < startVol) {
+			slider.val(parseInt(slider.val()) + 1);
+			slider.trigger("change");
+		}
+		else {
+			return;
+		}
+		
+		if (progress < duration) {
+			window.requestAnimationFrame(fadeinstep);
+		}
+	}
+	window.requestAnimationFrame(fadeinstep);
+}
+
+function fadeOut(aud, slider) {
+	var start = null;
+	var startVol = slider.val();
+	var duration = 3000;
+	
+	function fadeoutstep(timestamp) {
+		if (!start) start = timestamp;
+		var progress = timestamp - start;
+		if(slider.val() > 0) {
+			slider.val(parseInt(slider.val()) - 1);
+			slider.trigger("change");
+		}
+		else {
+			slider.val(startVol);
+			slider.trigger("change");
+			aud.trigger("pause");
+			return;
+		}
+		
+		if (progress < duration) {
+			window.requestAnimationFrame(fadeoutstep);
+		}
+		else {
+			slider.val(startVol);
+			slider.trigger("change");
+			aud.trigger("pause");
+		}
+	}
+	window.requestAnimationFrame(fadeoutstep);
 }
 
 //////////////////
