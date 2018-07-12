@@ -202,7 +202,7 @@ function removeTrack(trackId) {
 function fadeIn(aud, slider) {
 	var start = null;
 	var startVol = slider.val();
-	var duration = 3000;
+	var duration = parseFloat($("#txtDuration").val()) * 1000;;
 	slider.val(0);
 	slider.trigger("change");
 	aud.trigger("play");
@@ -213,7 +213,7 @@ function fadeIn(aud, slider) {
 		var progress = timestamp - start;
 		
 		if(parseInt(slider.val()) < parseInt(startVol)) {
-			slider.val(parseInt(slider.val()) + 1);
+			slider.val(progress * startVol / duration);
 			slider.trigger("change");
 		}
 		else {
@@ -229,14 +229,14 @@ function fadeIn(aud, slider) {
 
 function fadeOut(aud, slider) {
 	var start = null;
-	var startVol = slider.val();
-	var duration = 3000;
+	var startVol = parseInt(slider.val());
+	var duration = parseFloat($("#txtDuration").val()) * 1000;
 	
 	function fadeoutstep(timestamp) {
 		if (!start) start = timestamp;
 		var progress = timestamp - start;
 		if(parseInt(slider.val()) > 0) {
-			slider.val(parseInt(slider.val()) - 1);
+			slider.val(startVol - progress * startVol / duration);
 			slider.trigger("change");
 		}
 		else {
